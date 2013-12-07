@@ -586,15 +586,15 @@ def getPage(url, contextFactory=None, *args, **kwargs):
 
     See HTTPClientFactory to see what extra args can be passed.
     """
-    scheme, host, port, path = client._parse(url)
+    pr = urlparse.urlparse(url)
     factory = HeaderAwareHTTPClientFactory(url, *args, **kwargs)
-    if scheme == 'https':
+    if pr.scheme == 'https':
         from twisted.internet import ssl
         if contextFactory is None:
             contextFactory = ssl.ClientContextFactory()
-        reactor.connectSSL(host, port, factory, contextFactory)
+        reactor.connectSSL(pr.hostname, pr.port, factory, contextFactory)
     else:
-        reactor.connectTCP(host, port, factory)
+        reactor.connectTCP(pr.hostname, pr.port, factory)
     return factory.deferred
 
 
