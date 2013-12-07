@@ -7,12 +7,11 @@ import os
 import logging
 from logging import *
 
-LOG_FORMAT =('%(levelname)s %-27(category)s '
-             '%(asctime)s %(message)s '
-             '(%(filename)s:%(lineno))')
+LOG_FORMAT =('%(levelname)-8s %(asctime)s '
+             '%(name)-26s %(message)s '
+             '(%(pathname)s +%(lineno)d)')
 
 ENV_VAR_NAME = 'COHERENCE_DEBUG'
-
 
 class Loggable(logging.Logger):
     """
