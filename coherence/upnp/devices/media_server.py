@@ -585,7 +585,7 @@ class RootDeviceXML(static.Data):
         self.xml = """<?xml version="1.0" encoding="utf-8"?>""" + ET.tostring( root, encoding='utf-8')
         static.Data.__init__(self, self.xml, 'text/xml')
 
-class MediaServer(log.Loggable,BasicDeviceMixin):
+class MediaServer(BasicDeviceMixin, log.Loggable):
     logCategory = 'mediaserver'
 
     device_type = 'MediaServer'
