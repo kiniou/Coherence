@@ -25,6 +25,9 @@ class Loggable(logging.Logger):
 
     logCategory = 'default'
 
+    def __init__(self):
+        logging.Logger.__init__(self,self.logCategory, level=logging.DEBUG)
+
     def logObjectName(self):
         """Overridable object name function."""
         # cheat pychecker

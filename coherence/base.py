@@ -9,6 +9,7 @@ import os, sys
 import traceback
 import copy
 import logging
+from pprint import pprint, pformat
 
 from twisted.python import filepath, util
 from twisted.internet.tcp import CannotListenError
@@ -429,8 +430,10 @@ class Coherence(log.Loggable):
 
     def add_plugin(self, plugin, **kwargs):
         self.info("adding plugin %r", plugin)
+        self.info("with following args:\n%s", pformat(kwargs))
 
         self.available_plugins = Plugins()
+        self.info("available plugins:\n%s", pformat(dict(self.available_plugins)))
 
         try:
             plugin_class = self.available_plugins.get(plugin,None)
@@ -448,8 +451,7 @@ class Coherence(log.Loggable):
                 except KeyError:
                     self.warning("Can't enable %s plugin, sub-system %s not found!" % (plugin, device))
                 except Exception, msg:
-                    self.warning("Can't enable %s plugin for sub-system %s, %s!" % (plugin, device, msg))
-                    self.debug(traceback.format_exc())
+                    self.warning("Can't enable %s plugin for sub-system %s, %s!" % (plugin, device, msg), exc_info=True)
         except KeyError, error:
             self.warning("Can't enable %s plugin, not found!" % plugin)
         except Exception, msg:
@@ -637,12 +639,12 @@ class Coherence(log.Loggable):
         return [d for d in self.devices if d.manifestation == 'remote']
 
     def create_device(self, device_type, infos):
-        self.info("creating ", infos['ST'],infos['USN'])
+        self.info("creating %s %s", infos['ST'],infos['USN'])
         if infos['ST'] == 'upnp:rootdevice':
-            self.info("creating upnp:rootdevice ", infos['USN'])
+            self.info("creating upnp:rootdevice %s", infos['USN'])
             root = RootDevice(infos)
         else:
-            self.info("creating device/service ",infos['USN'])
+            self.info("creating device/service %s",infos['USN'])
             root_id = infos['USN'][:-len(infos['ST'])-2]
             root = self.get_device_with_id(root_id)
             device = Device(infos, root)
@@ -652,11 +654,11 @@ class Coherence(log.Loggable):
         #    self.callback("new_device", infos['ST'], infos)
 
     def add_device(self, device):
-        self.info("adding device",device.get_id(),device.get_usn(),device.friendly_device_type)
+        self.info("adding device %s %s %s",device.get_id(),device.get_usn(),device.friendly_device_type)
         self.devices.append(device)
 
     def remove_device(self, device_type, infos):
-        self.info("removed device",infos['ST'],infos['USN'])
+        self.info("removed device %s %s",infos['ST'],infos['USN'])
         device = self.get_device_with_usn(infos['USN'])
         if device:
             louie.send('Coherence.UPnP.Device.removed', None, usn=infos['USN'])

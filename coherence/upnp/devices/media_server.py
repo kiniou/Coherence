@@ -636,7 +636,7 @@ class MediaServer(log.Loggable,BasicDeviceMixin):
             self.content_directory_server = ContentDirectoryServer(self,transcoding=transcoding)
             self._services.append(self.content_directory_server)
         except LookupError,msg:
-            self.warning( 'ContentDirectoryServer', msg)
+            self.warning( 'ContentDirectoryServer %s', msg)
             raise LookupError(msg)
 
         try:
@@ -644,13 +644,13 @@ class MediaServer(log.Loggable,BasicDeviceMixin):
                                                         backend=FakeMediaReceiverRegistrarBackend())
             self._services.append(self.media_receiver_registrar_server)
         except LookupError,msg:
-            self.warning( 'MediaReceiverRegistrarServer (optional)', msg)
+            self.warning( 'MediaReceiverRegistrarServer (optional) %s', msg)
 
         try:
             self.scheduled_recording_server = ScheduledRecordingServer(self)
             self._services.append(self.scheduled_recording_server)
         except LookupError,msg:
-            self.info( 'ScheduledRecordingServer', msg)
+            self.info( 'ScheduledRecordingServer %s', msg)
 
         upnp_init = getattr(self.backend, "upnp_init", None)
         if upnp_init:
